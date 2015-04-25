@@ -1,0 +1,3 @@
+#!/bin/bash
+
+~/.cabal/bin/doctest parser.hs

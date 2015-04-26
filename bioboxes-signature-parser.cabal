@@ -48,6 +48,11 @@ build-type:          Simple
 -- Constraint on the version of Cabal needed to build this package.
 cabal-version:       >=1.10
 
+test-suite doctests
+  type:          exitcode-stdio-1.0
+  ghc-options:   -threaded
+  main-is:       doctests.hs
+  build-depends: base, doctest >= 0.8
 
 executable bioboxes-signature-parser
   -- .hs or .lhs file containing the Main module.

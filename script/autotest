@@ -1,5 +1,5 @@
 #!/bin/bash
 
-CMD="clear && ~/.cabal/bin/doctest src/parser.hs"
+CMD="clear && make test"
 eval ${CMD}
 fswatch src --one-per-batch path | xargs -n1 bash -c "${CMD}"

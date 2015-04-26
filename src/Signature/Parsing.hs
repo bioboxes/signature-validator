@@ -1,11 +1,8 @@
+module Signature.Parsing (parseSignature) where
+
 import Text.ParserCombinators.Parsec hiding ((<|>))
 import Control.Applicative
-import Debug.Trace
-
-data SigObj = Fasta Char
-            | Fastq Char
-            | SigList SigObj
-  deriving (Eq, Show)
+import Signature.Types
 
 parseObj name obj = try $ do
   string name
@@ -44,19 +41,13 @@ parseList = do
 parseSeparator :: Parser ()
 parseSeparator = spaces >> (string "->") >> spaces
 
--- | Parse a signature
+
+-- | Parse a biobox signature
 --
--- >>> parse parseSig "documentation" "Fastq A -> Fasta B"
+-- >>> parse parseSignature "documentation" "Fastq A -> Fasta B"
 -- Right [Fastq 'A',Fasta 'B']
 --
--- >>> parse parseSig "documentation" "[Fastq A] -> Fasta B"
+-- >>> parse parseSignature "documentation" "[Fastq A] -> Fasta B"
 -- Right [SigList (Fastq 'A'),Fasta 'B']
-parseSig = sepBy f parseSeparator
+parseSignature = sepBy f parseSeparator
   where f = parseFile <|> parseList
-
-runParse = parse parseSig "(source)"
-
-main = do
-  let example = "Fastq->Fasta"
-  let result  =  runParse example
-  traceShow result $ putStrLn ""

@@ -2,7 +2,9 @@ builder = builder
 tester  = tester
 
 docker = docker run \
+	        --tty \
 	        --rm \
+		--env BINARY=/opt/signature-validator/$(exec) \
 		--volume "$(shell pwd)/src:/opt/signature-validator/src:ro" \
 		--volume "$(shell pwd)/dist:/opt/signature-validator/dist:rw" \
 		--volume "$(shell pwd)/features:/features:ro"
@@ -10,7 +12,7 @@ docker = docker run \
 exec = dist/build/bioboxes-signature-parser/bioboxes-signature-parser
 
 ssh:
-	$(docker) --interactive --tty $(builder) /bin/bash
+	$(docker) --interactive $(builder) /bin/bash
 
 feature: $(exec)
 	$(docker) $(tester) cucumber /features

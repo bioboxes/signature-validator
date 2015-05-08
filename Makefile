@@ -19,6 +19,8 @@ $(exec): $(shell find src -type f) bioboxes-signature-parser.cabal
 
 bootstrap: .image-builder
 
+
+
 .image-%: images/%/Dockerfile bioboxes-signature-parser.cabal
 	cp bioboxes-signature-parser.cabal $(dir $<)
 	docker build --tag $* $(dir $<)

@@ -3,10 +3,26 @@ Feature: Validate a biobox signature
   The validate-biobox-signature can be used to generate a schema
   So that the developer can test the biobox.yml file
 
+  Scenario Outline: Using different command line parameters
+    When I run the bash command:
+      """
+      ${BINARY} <signature> "fastq -> fastq" <schema>=<type>
+      """
+    Then the stderr should not contain anything
+     And the exit status should be 0
+
+    Examples:
+      | signature   | schema   | type   |
+      | --signature | --schema | input  |
+      | --signature | --schema | output |
+      | -s          | -e       | input  |
+
+
+
   Scenario: Parsing a simple signature
     When I run the bash command:
       """
-      ${BINARY}
+      ${BINARY} --signature "fastq -> fastq" --schema=output
       """
     Then the stderr should not contain anything
      And the exit status should be 0

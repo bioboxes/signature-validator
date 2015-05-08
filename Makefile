@@ -1,3 +1,5 @@
+image = haskell-builder
+
 exec = dist/build/bioboxes-signature-parser/bioboxes-signature-parser
 
 test:
@@ -8,8 +10,8 @@ build: $(exec)
 $(exec): $(shell find src -type f) bioboxes-signature-parser.cabal
 	cabal build
 
-bootstrap: .cabal-sandbox
+bootstrap: .image
 
-.cabal-sandbox: bioboxes-signature-parser.cabal
-	cabal sandbox init
-	cabal install --only-dependencies --enable-tests
+.image: bioboxes-signature-parser.cabal Dockerfile
+	docker build --tag $(image) .
+	touch $@

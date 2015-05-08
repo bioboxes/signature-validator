@@ -1,12 +1,10 @@
 FROM haskell:7.10
 MAINTAINER Michael Barton, mail@michaelbarton.me.uk
 
+RUN cabal update
+
 ENV BUILD /opt/signature-validator
 RUN mkdir ${BUILD}
-
 ADD ./bioboxes-signature-parser.cabal ${BUILD}/
-RUN cd ${BUILD} && \
-       cabal update && \
-       cabal install --only-dependencies --enable-tests --jobs=$(nproc)
-
 WORKDIR ${BUILD}
+RUN cabal install --only-dependencies --enable-tests --jobs=$(nproc)

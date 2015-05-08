@@ -1,4 +1,4 @@
-image = haskell-builder
+builder = builder
 docker = docker run \
 	        --rm \
 		--volume "$(shell pwd)/src:/opt/signature-validator/src:ro" \
@@ -17,8 +17,9 @@ build: $(exec)
 $(exec): $(shell find src -type f) bioboxes-signature-parser.cabal
 	$(docker) $(image) cabal build
 
-bootstrap: .image
+bootstrap: .image-builder
 
-.image: bioboxes-signature-parser.cabal Dockerfile
-	docker build --tag $(image) .
+.image-%: images/%/Dockerfile bioboxes-signature-parser.cabal
+	cp bioboxes-signature-parser.cabal $(dir $<)
+	docker build --tag $* $(dir $<)
 	touch $@

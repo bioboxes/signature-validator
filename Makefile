@@ -29,3 +29,5 @@ bootstrap: .image-builder .image-tester
 	cp bioboxes-signature-parser.cabal $(dir $<)
 	docker build --tag $* $(dir $<)
 	touch $@
+
+.PHONY: test feature bootstrap build

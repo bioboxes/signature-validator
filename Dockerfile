@@ -8,3 +8,5 @@ ADD ./bioboxes-signature-parser.cabal ${BUILD}/
 RUN cd ${BUILD} && \
        cabal update && \
        cabal install --only-dependencies --enable-tests --jobs=$(nproc)
+
+WORKDIR ${BUILD}

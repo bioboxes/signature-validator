@@ -3,6 +3,8 @@ import Schema.Builder
 
 import System.Environment (getArgs)
 import System.Console.GetOpt
+import System.Exit
+import System.IO
 
 data Flag = Signature String | Schema String
   deriving Show
@@ -13,17 +15,21 @@ options =
     , Option ['e'] ["schema"]    (ReqArg Schema    "SCHEMA")    "which schema type - input|output"
     ]
 
-processArgs :: [String] -> IO ([Flag], [String])
+processArgs :: [String] -> Either String [Flag]
 processArgs argv =
   case getOpt Permute options argv of
-     (o, n, [])   -> return  (o, n)
-     (_, _, errs) -> ioError (userError (concat errs ++ usageInfo header options))
+     (flags, _, [])   -> Right flags
+     (_, _, errors)   -> Left (concat errors ++ usageInfo header options)
   where header = "Usage: "
 
+evaluateInputs :: Either String [Flag] -> IO()
+evaluateInputs (Right flags) = finish (build, stdout, ExitSuccess)
+evaluateInputs (Left msg)    = finish (msg,   stderr, ExitFailure 1)
+
+finish (output, handle, code) = do
+  hPutStrLn handle output
+  exitWith code
+
 main = do
-  args       <- getArgs
-  (flags, _) <- processArgs args
-  putStrLn $ unwords $ map show flags
-
-
-  putStrLn build
+  args <- getArgs
+  evaluateInputs $ processArgs args

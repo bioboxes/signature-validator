@@ -17,6 +17,16 @@ Feature: Validate a biobox signature
       | --signature | --schema | output |
       | -s          | -e       | input  |
 
+  Scenario: An invalid schema is specified
+    When I run the bash command:
+      """
+      ${BINARY} --signature "Fastq A -> Fastq A" --schema=error
+      """
+    Then the stdout should not contain anything
+    Then the stderr should contain:
+      """
+      Error: unknown schema type "error"
+      """
 
   Scenario: Parsing a simple signature
     When I run the bash command:

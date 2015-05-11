@@ -36,7 +36,8 @@ finish = either (f stderr $ ExitFailure 1) (f stdout ExitSuccess)
 selectSignature :: [Flag] -> Either String SigObj
 selectSignature [(Signature sig), (Schema "input")]  = fmap fst $ parseSignature sig
 selectSignature [(Signature sig), (Schema "output")] = fmap snd $ parseSignature sig
-selectSignature [(Signature sig), (Schema x)]        = Left("Unknown schema type \"" ++ x ++ "\"")
+selectSignature [(Signature sig), (Schema x)]        = Left("Error: unknown schema type \"" ++ x ++ "\"")
+
 
 
 main = do

@@ -24,4 +24,4 @@ document = object [
   ]
 
 build :: SigObj -> Either String String
-build _ = Right ""
+build _ = Right . B.unpack . encode $ document

@@ -6,7 +6,7 @@ Feature: Validate a biobox signature
   Scenario Outline: Using different command line parameters
     When I run the bash command:
       """
-      ${BINARY} <signature> "fastq -> fastq" <schema>=<type>
+      ${BINARY} <signature> "Fastq A -> Fastq A" <schema> <type>
       """
     Then the stderr should not contain anything
      And the exit status should be 0
@@ -18,12 +18,10 @@ Feature: Validate a biobox signature
       | -s          | -e       | input  |
 
 
-
-  @announce
   Scenario: Parsing a simple signature
     When I run the bash command:
       """
-      ${BINARY} --signature "fastq -> fastq" --schema=output
+      ${BINARY} --signature "Fastq A -> Fastq A" --schema=output
       """
     Then the stderr should not contain anything
      And the exit status should be 0

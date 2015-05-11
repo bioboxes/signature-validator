@@ -51,11 +51,9 @@ parseSeparator = spaces >> (string "->") >> spaces
 -- >>> parseSignature "[Fastq A] -> Fasta B"
 -- Right (SigList (Fastq 'A'),Fasta 'B')
 parseSignature :: String -> Either String (SigObj, SigObj)
-parseSignature x = (either parseErrorMessage structureSignature) $ f "bioboxes" x
+parseSignature x = (either parseErrorMessage structureSignature) $ f header x
   where terms = parseFile <|> parseList
         f = parse $ sepBy1 terms parseSeparator
-        parseErrorMessage x        = Left (unlines $ map messageString $ errorMessages x)
+        parseErrorMessage x        = Left (show x)
         structureSignature (x:y:_) = Right (x, y)
-
-
-
+        header = "Error parsing biobox signature"

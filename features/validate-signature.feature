@@ -19,6 +19,7 @@ Feature: Validate a biobox signature
 
 
 
+  @announce
   Scenario: Parsing a simple signature
     When I run the bash command:
       """

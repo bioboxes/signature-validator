@@ -1,5 +1,7 @@
 import Signature.Parsing
-import Schema.Builder
+import Signature.Types
+
+import qualified Schema.Builder as Schema
 
 import System.Environment (getArgs)
 import System.Console.GetOpt
@@ -15,6 +17,7 @@ options =
     , Option ['e'] ["schema"]    (ReqArg Schema    "SCHEMA")    "which schema type - input|output"
     ]
 
+
 processArgs :: [String] -> Either String [Flag]
 processArgs argv =
   case getOpt Permute options argv of
@@ -22,14 +25,20 @@ processArgs argv =
      (_, _, errors)   -> Left (concat errors ++ usageInfo header options)
   where header = "Usage: "
 
-evaluateInputs :: Either String [Flag] -> IO()
-evaluateInputs (Right flags) = finish (build, stdout, ExitSuccess)
-evaluateInputs (Left msg)    = finish (msg,   stderr, ExitFailure 1)
 
-finish (output, handle, code) = do
-  hPutStrLn handle output
-  exitWith code
+finish :: Either String String -> IO()
+finish = either (f stderr $ ExitFailure 1) (f stdout ExitSuccess)
+  where f handle code output = do
+                               hPutStrLn handle output
+                               exitWith code
+
+
+selectSignature :: [Flag] -> Either String SigObj
+selectSignature [(Signature sig), (Schema "input")]  = fmap fst $ parseSignature sig
+selectSignature [(Signature sig), (Schema "output")] = fmap snd $ parseSignature sig
+selectSignature [(Signature sig), (Schema x)]       = Left("Unknown schema type " ++ x)
+
 
 main = do
   args <- getArgs
-  evaluateInputs $ processArgs args
+  finish $ processArgs args >>= selectSignature >>= Schema.build

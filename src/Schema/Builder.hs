@@ -2,6 +2,7 @@
 
 module Schema.Builder (build) where
 
+import Signature.Types
 import Data.Yaml
 import qualified Data.ByteString.Char8 as B
   
@@ -22,5 +23,5 @@ document = object [
       ]
   ]
 
-build :: String
-build = B.unpack . encode $ document
+build :: SigObj -> Either String String
+build _ = Right ""

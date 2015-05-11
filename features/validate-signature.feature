@@ -28,10 +28,10 @@ Feature: Validate a biobox signature
       Error: unknown schema type "error"
       """
 
-  Scenario: Parsing a simple signature
+  Scenario Outline: Parsing a simple signature
     When I run the bash command:
       """
-      ${BINARY} --signature "Fastq A -> Fastq A" --schema=output
+      ${BINARY} --signature "Fastq A -> Fastq A" --schema=<schema>
       """
     Then the stderr should not contain anything
      And the exit status should be 0
@@ -45,3 +45,8 @@ Feature: Validate a biobox signature
        | key     | value      |
        | type    | string     |
        | pattern | ^0.9.\\d+$ |
+
+    Examples:
+      | schema |
+      | input  |
+      | output |

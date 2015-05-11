@@ -1,6 +1,7 @@
 module Signature.Parsing (parseSignature) where
 
 import Text.ParserCombinators.Parsec hiding ((<|>))
+import Text.ParserCombinators.Parsec.Error
 import Control.Applicative
 import Signature.Types
 
@@ -44,10 +45,15 @@ parseSeparator = spaces >> (string "->") >> spaces
 
 -- | Parse a biobox signature
 --
--- >>> parse parseSignature "documentation" "Fastq A -> Fasta B"
--- Right [Fastq 'A',Fasta 'B']
+-- >>> parseSignature "Fastq A -> Fasta B"
+-- Right (Fastq 'A',Fasta 'B')
 --
--- >>> parse parseSignature "documentation" "[Fastq A] -> Fasta B"
--- Right [SigList (Fastq 'A'),Fasta 'B']
-parseSignature = sepBy f parseSeparator
-  where f = parseFile <|> parseList
+-- >>> parseSignature "[Fastq A] -> Fasta B"
+-- Right (SigList (Fastq 'A'),Fasta 'B')
+parseSignature :: String -> Either String (SigObj, SigObj)
+parseSignature x = (either parseErrorMessage structureSignature) $ f header x
+  where terms = parseFile <|> parseList
+        f = parse $ sepBy1 terms parseSeparator
+        parseErrorMessage x        = Left (show x)
+        structureSignature (x:y:_) = Right (x, y)
+        header = "Error parsing biobox signature"

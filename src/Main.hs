@@ -26,18 +26,18 @@ processArgs argv =
   where header = "Usage: "
 
 
+selectSignature :: [Flag] -> Either String SigObj
+selectSignature [(Signature sig), (Schema sch)] = f sch
+  where f "input"  = fmap fst $ parseSignature sig
+        f "output" = fmap snd $ parseSignature sig
+        f x        = Left("Error: unknown schema type \"" ++ x ++ "\"")
+
+
 finish :: Either String String -> IO()
 finish = either (f stderr $ ExitFailure 1) (f stdout ExitSuccess)
   where f handle code output = do
                                hPutStrLn handle output
                                exitWith code
-
-
-selectSignature :: [Flag] -> Either String SigObj
-selectSignature [(Signature sig), (Schema "input")]  = fmap fst $ parseSignature sig
-selectSignature [(Signature sig), (Schema "output")] = fmap snd $ parseSignature sig
-selectSignature [(Signature sig), (Schema x)]        = Left("Error: unknown schema type \"" ++ x ++ "\"")
-
 
 
 main = do

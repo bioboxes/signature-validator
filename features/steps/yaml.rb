@@ -1,6 +1,6 @@
 def test_entries(table, document)
   table.hashes.each do |row|
-    document[row['key']].to_s.should eq(row['value'])
+    expect(document[row['key']].to_s).to eq(row['value'])
   end
 end
 
@@ -27,7 +27,7 @@ end
 Then(/^the YAML document entry "([^"]*)" should have the items:$/) do |entry_path, table|
   entry = fetch_entry(entry_path, @document)
   table.hashes.each do |row|
-    entry.should include(row['item'])
+    expect(entry).to include(row['item'])
   end
 end
 

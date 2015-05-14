@@ -8,28 +8,29 @@ import qualified Data.ByteString.Char8 as B
   
 arguments = object [
     "type"     .= String "array"
-  , "minItems" .= Number 1
-  , "maxItems" .= Number 1
-  , "items"    .= object [
-      "oneOf" .= array [
-        object ["$ref" .= String "#/definitions/fastq"]
+  , "additionalItems" .= False
+  , "items"    .= array [
+      object [
+          "required" .= array [ String "fastq" ]
+        , "additionalProperties" .= False
+        , "type" .= String "object"
+        , "properties" .= object [
+            "fastq" .= object ["$ref" .= String "#/definitions/value"]
+        ]
       ]
     ]
   ]
 
 definitions = object [
-    "fastq" .= object [
+    "value" .= object [ 
         "type" .= String "object"
       , "additionalProperties" .= False
-      , "required" .= [ String "fastq" ]
+      , "required" .= array [String "id", String "value", String "type"]
       , "properties" .= object [
-        "$ref" .= String "#/definitions/value"
+          "id"    .= object ["type" .= String "string"]
+        , "value" .= object ["type" .= String "string"]
+        , "type"  .= object ["type" .= String "string"]
       ]
-    ]
-  , "value" .= object [ 
-        "type" .= String "object"
-      , "additionalProperties" .= False
-      , "required" .= [ String "id", String "value", String "type"]
     ]
   ]
 

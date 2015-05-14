@@ -63,27 +63,32 @@ Feature: Validate a biobox signature
        | type    | string     |
        | pattern | ^0.9.\\d+$ |
      And the YAML document entry "properties.arguments" should have the key-values:
-       | key      | value      |
-       | type     | array      |
-       | minItems | 1          |
-       | maxItems | 1          |
-     And the YAML document entry "properties.arguments.items.oneOf.[0]" should have the key-values:
-       | key  | value               |
-       | $ref | #/definitions/fastq |
-     And the YAML document entry "definitions.fastq" should have the key-values:
+       | key             | value |
+       | type            | array |
+       | additionalItems | false |
+     And the YAML document entry "properties.arguments.items.[0]" should have the key-values:
        | key                  | value  |
        | type                 | object |
        | additionalProperties | false  |
-     And the YAML document entry "definitions.fastq.required" should have the items:
-       | item  | 
+     And the YAML document entry "properties.arguments.items.[0].required" should have the items:
+       | item  |
        | fastq |
-     And the YAML document entry "definitions.fastq.properties" should have the key-values:
-       | key  | value                |
-       | $ref | #/definitions/value  |
+     And the YAML document entry "properties.arguments.items.[0].properties.fastq" should have the key-values:
+       | key  | value               |
+       | $ref | #/definitions/value |
      And the YAML document entry "definitions.value" should have the key-values:
        | key                  | value  |
        | type                 | object |
        | additionalProperties | false  |
+     And the YAML document entry "definitions.value.properties.id" should have the key-values:
+       | key  | value  |
+       | type | string |
+     And the YAML document entry "definitions.value.properties.value" should have the key-values:
+       | key  | value  |
+       | type | string |
+     And the YAML document entry "definitions.value.properties.type" should have the key-values:
+       | key  | value  |
+       | type | string |
      And the YAML document entry "definitions.value.required" should have the items:
        | item  | 
        | id    |

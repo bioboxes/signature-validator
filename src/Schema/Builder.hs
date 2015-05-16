@@ -4,20 +4,15 @@ module Schema.Builder (build) where
 
 import Signature.Types
 import Data.Yaml
-import qualified Data.ByteString.Char8 as B
-  
-arguments = object [
-    "type"     .= String "array"
-  , "additionalItems" .= False
-  , "items"    .= array [
-      object [
-          "required" .= array [ String "fastq" ]
-        , "additionalProperties" .= False
-        , "type" .= String "object"
-        , "properties" .= object [
-            "fastq" .= object ["$ref" .= String "#/definitions/value"]
-        ]
-      ]
+
+import qualified Data.ByteString.Char8  as B
+
+argument x = object [
+    "required" .= array [ String "fastq" ]
+  , "additionalProperties" .= False
+  , "type" .= String "object"
+  , "properties" .= object [
+      x .= object ["$ref" .= String "#/definitions/value"]
     ]
   ]
 
@@ -34,17 +29,24 @@ definitions = object [
     ]
   ]
 
-document = object [
+document terms = object [
     "$schema"  .= String "http://json-schema.org/draft-04/schema#"
   , "type"     .= String "object"
   , "additionalProperties" .= False
-  , "properties" .= object [
-          "version"   .= object ["type" .= String "string", "pattern" .= String "^0.9.\\d+$"]
-        , "arguments" .= arguments 
-      ]
   , "required" .= [String "arguments", String "version"]
   , "definitions" .= definitions
+  , "properties" .= object [
+          "version"   .= object ["type" .= String "string", "pattern" .= String "^0.9.\\d+$"]
+        , "arguments" .= object [
+            "type"            .= String "array"
+          , "additionalItems" .= False
+          , "items"           .= array terms
+        ]
+      ]
   ]
 
+term (Fastq _) = "fastq"
+term (Fasta _) = "fasta"
+
 build :: [SigObj] -> Either String String
-build _ = Right . B.unpack . encode $ document
+build x = Right . B.unpack . encode $ document $ map (argument . term) x

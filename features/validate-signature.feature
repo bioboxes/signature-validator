@@ -99,3 +99,29 @@ Feature: Validate a biobox signature
       | schema |
       | input  |
       | output |
+
+
+  Scenario: Parsing a signature with two arguments
+    When I run the bash command:
+      """
+      ${BINARY} --signature "Fastq A, Fastq A -> Fastq A" --schema=input
+      """
+    Then the stderr should not contain anything
+     And the exit status should be 0
+     And the stdout should be valid YAML
+     And the YAML document entry "properties.arguments.items.[0]" should have the key-values:
+       | key                  | value  |
+       | type                 | object |
+       | additionalProperties | false  |
+     And the YAML document entry "properties.arguments.items.[0].required" should have the items:
+       | item  |
+       | fastq |
+     And the YAML document entry "properties.arguments.items.[0].properties.fastq" should have the key-values:
+       | key  | value               |
+       | $ref | #/definitions/value |
+     And the YAML document entry "properties.arguments.items.[1].required" should have the items:
+       | item  |
+       | fastq |
+     And the YAML document entry "properties.arguments.items.[1].properties.fastq" should have the key-values:
+       | key  | value               |
+       | $ref | #/definitions/value |

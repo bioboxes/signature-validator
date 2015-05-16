@@ -7,7 +7,13 @@ import Data.Yaml
 
 import qualified Data.ByteString.Char8  as B
 
-argument x = object [
+schema_array xs = object [
+    "type"            .= String "array"
+  , "additionalItems" .= False
+  , "items"           .= array xs
+  ]
+
+schema_entry x = object [
     "required" .= array [ String "fastq" ]
   , "additionalProperties" .= False
   , "type" .= String "object"
@@ -37,16 +43,12 @@ document terms = object [
   , "definitions" .= definitions
   , "properties" .= object [
           "version"   .= object ["type" .= String "string", "pattern" .= String "^0.9.\\d+$"]
-        , "arguments" .= object [
-            "type"            .= String "array"
-          , "additionalItems" .= False
-          , "items"           .= array terms
-        ]
+        , "arguments" .= schema_array terms
       ]
   ]
 
-term (Fastq _) = "fastq"
-term (Fasta _) = "fasta"
+term (Fastq _)   = schema_entry "fastq"
+term (Fasta _)   = schema_entry "fasta"
 
 build :: [SigObj] -> Either String String
-build x = Right . B.unpack . encode $ document $ map (argument . term) x
+build x = Right . B.unpack . encode $ document $ map term x

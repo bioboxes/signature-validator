@@ -125,3 +125,13 @@ Feature: Validate a biobox signature
      And the YAML document entry "properties.arguments.items.[1].properties.fastq" should have the key-values:
        | key  | value               |
        | $ref | #/definitions/value |
+
+
+  Scenario: Parsing a signature with a list argument
+    When I run the bash command:
+      """
+      ${BINARY} --signature "[Fastq A] -> Fastq A" --schema=input
+      """
+    Then the stderr should not contain anything
+     And the exit status should be 0
+     And the stdout should be valid YAML

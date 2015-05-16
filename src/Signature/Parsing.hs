@@ -7,7 +7,7 @@ import Signature.Types
 
 parseObj name obj = try $ do
   spaces
-  string name
+  try $ string name
   spaces
   x <- upper
   return $ obj x
@@ -61,6 +61,9 @@ terms = sepBy values comma
 --
 -- >>> parse signature "documentation" "Fastq A, Fastq B -> Fastq A"
 -- Right [[Fastq 'A',Fastq 'B'],[Fastq 'A']]
+--
+-- >>> parse signature "documentation" "[Fastq A] -> Fastq A"
+-- Right [[SigList (Fastq 'A')],[Fastq 'A']]
 signature :: Parser ([[SigObj]])
 signature = sepBy1 terms separator
   where separator = spaces >> string "->" >> spaces
@@ -70,6 +73,9 @@ signature = sepBy1 terms separator
 --
 -- >>> parseSignature "Fastq A -> Fastq A"
 -- Right ([Fastq 'A'],[Fastq 'A'])
+--
+-- >>> parseSignature "[Fastq A] -> Fastq A"
+-- Right ([SigList (Fastq 'A')],[Fastq 'A'])
 parseSignature :: String -> Either String ([SigObj], [SigObj])
 parseSignature = (either err sig) . (parse signature header)
   where err x       = Left (show x)

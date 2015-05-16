@@ -14,7 +14,7 @@ schema_array xs = object [
   ]
 
 schema_entry x = object [
-    "required" .= array [ String "fastq" ]
+    "required" .= array [ String x ]
   , "additionalProperties" .= False
   , "type" .= String "object"
   , "properties" .= object [
@@ -47,6 +47,7 @@ document terms = object [
       ]
   ]
 
+term (SigList x) = schema_array [term x]
 term (Fastq _)   = schema_entry "fastq"
 term (Fasta _)   = schema_entry "fasta"
 

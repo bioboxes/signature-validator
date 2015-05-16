@@ -8,7 +8,7 @@ def fetch_entry(entry_path, document)
   entry_path.split('.').inject(document) do |doc, key|
     if match = /\[(\d)\]/.match(key)
       key = match[1].to_i
-      expect(doc.length).to be > key
+      expect(doc.length).to be > key, "The #{key}th entry should exist"
     else
       expect(doc).to include(key)
     end

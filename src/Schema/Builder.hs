@@ -46,5 +46,5 @@ document = object [
   , "definitions" .= definitions
   ]
 
-build :: SigObj -> Either String String
+build :: [SigObj] -> Either String String
 build _ = Right . B.unpack . encode $ document

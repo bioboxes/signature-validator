@@ -26,7 +26,7 @@ processArgs argv =
   where header = "Usage: "
 
 
-selectSignature :: [Flag] -> Either String SigObj
+selectSignature :: [Flag] -> Either String [SigObj]
 selectSignature [(Signature sig), (Schema sch)] = f sch
   where f "input"  = fmap fst $ parseSignature sig
         f "output" = fmap snd $ parseSignature sig

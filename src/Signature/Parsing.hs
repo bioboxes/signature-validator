@@ -71,8 +71,7 @@ signature = sepBy1 terms separator
 -- >>> parseSignature "Fastq A -> Fastq A"
 -- Right ([Fastq 'A'],[Fastq 'A'])
 parseSignature :: String -> Either String ([SigObj], [SigObj])
-parseSignature x = (either err sig) $ f header x
-  where f = parse $ signature
-        err x        = Left (show x)
+parseSignature = (either err sig) . (parse signature header)
+  where err x       = Left (show x)
         sig (x:y:_) = Right (x, y)
         header = "Error parsing biobox signature"

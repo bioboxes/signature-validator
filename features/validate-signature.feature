@@ -29,6 +29,7 @@ Feature: Validate different biobox signatures
       | term        |
       | Fasta       |
       | Fastq       |
+      | Insert_size |
 
 
 

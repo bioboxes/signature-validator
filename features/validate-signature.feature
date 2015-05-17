@@ -1,7 +1,4 @@
-Feature: Validate a biobox signature
-  In order for developers to validate biobox input files
-  The validate-biobox-signature can be used to generate a schema
-  So that the developer can test the biobox.yml file
+Feature: Validate different biobox signatures
 
   Scenario Outline: Using different command line parameters
     When I run the bash command:
@@ -17,29 +14,23 @@ Feature: Validate a biobox signature
       | --signature | --schema | output |
       | -s          | -e       | input  |
 
-  Scenario: An invalid schema is specified
-    When I run the bash command:
-      """
-      ${BINARY} --signature "Fastq A -> Fastq A" --schema=error
-      """
-    Then the stdout should not contain anything
-     And the stderr should contain:
-      """
-      Error: unknown schema type "error"
-      """
 
-  Scenario: An invalid signature is specified
+
+  Scenario Outline: Parsing different biobox signature terms
     When I run the bash command:
       """
-      ${BINARY} --signature "Fastq A / Fastq A" --schema=input
+      ${BINARY} --signature "[<term> A] -> <term> A" --schema=input
       """
-    Then the stdout should not contain anything
-     And the stderr should contain:
-      """
-      Error parsing biobox signature" (line 1, column 9):
-      unexpected "/"
-      expecting space or "->"
-      """
+    Then the stderr should not contain anything
+     And the exit status should be 0
+     And the stdout should be valid YAML
+
+    Examples:
+      | term        |
+      | Fasta       |
+      | Fastq       |
+
+
 
   Scenario Outline: Parsing a simple signature
     When I run the bash command:
@@ -90,7 +81,7 @@ Feature: Validate a biobox signature
        | key  | value  |
        | type | string |
      And the YAML document entry "definitions.value.required" should have the items:
-       | item  | 
+       | item  |
        | id    |
        | value |
        | type  |
@@ -125,3 +116,4 @@ Feature: Validate a biobox signature
      And the YAML document entry "properties.arguments.items.[1].properties.fastq" should have the key-values:
        | key  | value               |
        | $ref | #/definitions/value |
+

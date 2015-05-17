@@ -11,7 +11,12 @@ docker = docker run \
 
 exec = dist/build/bioboxes-signature-parser/bioboxes-signature-parser
 
-ssh:
+
+try: $(exec)
+	$(docker) --interactive $(builder) \
+		$(exec) --signature="$(SIG)" --schema=input
+
+ssh: $(exec)
 	$(docker) --interactive $(builder) /bin/bash
 
 feature: $(exec)

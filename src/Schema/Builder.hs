@@ -13,26 +13,29 @@ schema_array xs = object [
   , "items"           .= array xs
   ]
 
-schema_entry x = object [
-    "required" .= array [ String x ]
+schema_entry name = object [
+    "required" .= array [ String name ]
   , "additionalProperties" .= False
   , "type" .= String "object"
   , "properties" .= object [
-      x .= object ["$ref" .= String "#/definitions/value"]
+      name .= object ["$ref" .= String "#/definitions/value"]
+    ]
+  ]
+
+definition value = object [
+      "type" .= String "object"
+    , "additionalProperties" .= False
+    , "required" .= array [String "id", String "value", String "type"]
+    , "properties" .= object [
+        "id"    .= object ["type" .= String "string"]
+      , "value" .= object ["type" .= String value]
+      , "type"  .= object ["type" .= String "string"]
     ]
   ]
 
 definitions = object [
-    "value" .= object [
-        "type" .= String "object"
-      , "additionalProperties" .= False
-      , "required" .= array [String "id", String "value", String "type"]
-      , "properties" .= object [
-          "id"    .= object ["type" .= String "string"]
-        , "value" .= object ["type" .= String "string"]
-        , "type"  .= object ["type" .= String "string"]
-      ]
-    ]
+    "str_var" .= definition "string"
+  , "num_var" .= definition "number"
   ]
 
 document terms = object [
@@ -48,8 +51,9 @@ document terms = object [
   ]
 
 term (SigList x) = schema_array [term x]
-term (Fastq _)   = schema_entry "fastq"
-term (Fasta _)   = schema_entry "fasta"
+term (Fastq _)      = schema_entry "fastq"
+term (Fasta _)      = schema_entry "fasta"
+term (InsertSize _) = schema_entry "insert_size"
 
 build :: [SigObj] -> Either String String
 build x = Right . B.unpack . encode $ document $ map term x

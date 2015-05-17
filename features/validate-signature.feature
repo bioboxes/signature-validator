@@ -118,3 +118,21 @@ Feature: Validate different biobox signatures
        | key  | value               |
        | $ref | #/definitions/value |
 
+
+  Scenario: Parsing an signature with Insert_size
+    When I run the bash command:
+      """
+      ${BINARY} --signature "Insert_size A -> Fastq A" --schema=input
+      """
+    Then the stderr should not contain anything
+     And the exit status should be 0
+     And the stdout should be valid YAML
+     And the YAML document entry "properties.arguments.items.[0].required" should have the items:
+       | item  |
+       | insert_size |
+     And the YAML document entry "properties.arguments.items.[0].properties.insert_size" should have the key-values:
+       | key  | value               |
+       | $ref | #/definitions/value |
+     And the YAML document entry "definitions.value.properties.value" should have the key-values:
+       | key  | value  |
+       | type | number |

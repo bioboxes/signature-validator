@@ -90,7 +90,7 @@ Feature: Validate a biobox signature
        | key  | value  |
        | type | string |
      And the YAML document entry "definitions.value.required" should have the items:
-       | item  | 
+       | item  |
        | id    |
        | value |
        | type  |

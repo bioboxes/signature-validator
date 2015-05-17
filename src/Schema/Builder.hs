@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-} 
+{-# LANGUAGE OverloadedStrings #-}
 
 module Schema.Builder (build) where
 
@@ -23,7 +23,7 @@ schema_entry x = object [
   ]
 
 definitions = object [
-    "value" .= object [ 
+    "value" .= object [
         "type" .= String "object"
       , "additionalProperties" .= False
       , "required" .= array [String "id", String "value", String "type"]

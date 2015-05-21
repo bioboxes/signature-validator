@@ -67,21 +67,21 @@ Feature: Validate different biobox signatures
        | fastq |
      And the YAML document entry "properties.arguments.items.[0].properties.fastq" should have the key-values:
        | key  | value               |
-       | $ref | #/definitions/value |
-     And the YAML document entry "definitions.value" should have the key-values:
+       | $ref | #/definitions/str_var |
+     And the YAML document entry "definitions.str_var" should have the key-values:
        | key                  | value  |
        | type                 | object |
        | additionalProperties | false  |
-     And the YAML document entry "definitions.value.properties.id" should have the key-values:
+     And the YAML document entry "definitions.str_var.properties.id" should have the key-values:
        | key  | value  |
        | type | string |
-     And the YAML document entry "definitions.value.properties.value" should have the key-values:
+     And the YAML document entry "definitions.str_var.properties.value" should have the key-values:
        | key  | value  |
        | type | string |
-     And the YAML document entry "definitions.value.properties.type" should have the key-values:
+     And the YAML document entry "definitions.str_var.properties.type" should have the key-values:
        | key  | value  |
        | type | string |
-     And the YAML document entry "definitions.value.required" should have the items:
+     And the YAML document entry "definitions.str_var.required" should have the items:
        | item  |
        | id    |
        | value |
@@ -110,13 +110,13 @@ Feature: Validate different biobox signatures
        | fastq |
      And the YAML document entry "properties.arguments.items.[0].properties.fastq" should have the key-values:
        | key  | value               |
-       | $ref | #/definitions/value |
+       | $ref | #/definitions/str_var |
      And the YAML document entry "properties.arguments.items.[1].required" should have the items:
        | item  |
        | fastq |
      And the YAML document entry "properties.arguments.items.[1].properties.fastq" should have the key-values:
        | key  | value               |
-       | $ref | #/definitions/value |
+       | $ref | #/definitions/str_var |
 
 
   Scenario: Parsing an signature with Insert_size
@@ -132,7 +132,7 @@ Feature: Validate different biobox signatures
        | insert_size |
      And the YAML document entry "properties.arguments.items.[0].properties.insert_size" should have the key-values:
        | key  | value               |
-       | $ref | #/definitions/value |
-     And the YAML document entry "definitions.value.properties.value" should have the key-values:
+       | $ref | #/definitions/num_var |
+     And the YAML document entry "definitions.num_var.properties.value" should have the key-values:
        | key  | value  |
        | type | number |

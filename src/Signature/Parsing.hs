@@ -14,24 +14,22 @@ parseObj name obj = try $ do
 
 -- | Parse filetypes from the signature
 --
--- >>> parse parseFile "documentation" "Fasta A"
+-- >>> parse value "documentation" "Fasta A"
 -- Right (Fasta 'A')
---
--- >>> parse parseFile "documentation" " Fastq A "
--- Right (Fastq 'A')
-parseFile :: Parser SigObj
-parseFile = parseObj "Fasta" Fasta
-        <|> parseObj "Fastq" Fastq
+value :: Parser SigObj
+value = parseObj "Fasta" Fasta
+    <|> parseObj "Fastq" Fastq
+    <|> parseObj "Insert_size" InsertSize
 
 -- | Parse list from the signature
 --
--- >>> parse parseList "documentation" "[Fasta A]"
+-- >>> parse list "documentation" "[Fasta A]"
 -- Right (SigList (Fasta 'A'))
 --
-parseList :: Parser SigObj
-parseList = do
+list :: Parser SigObj
+list = do
   char '['
-  x <- parseFile
+  x <- value
   char ']'
   return $ SigList x
 
@@ -49,7 +47,7 @@ parseList = do
 -- Right [SigList (Fastq 'A'),Fastq 'A']
 terms :: Parser ([SigObj])
 terms = sepBy values comma
-  where values = parseFile <|> parseList
+  where values = value <|> list
         comma  = string ","
 
 

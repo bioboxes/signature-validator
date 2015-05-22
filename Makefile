@@ -20,7 +20,7 @@ ssh: $(exec)
 	$(docker) --interactive --tty $(tester) /bin/bash
 
 feature: $(exec)
-	$(docker) $(tester) cucumber /features
+	$(docker) $(tester) cucumber ${FILES}
 
 test:
 	$(docker) $(builder) doctest $(shell find src -type f)

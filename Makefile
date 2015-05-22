@@ -17,10 +17,10 @@ try: $(exec)
 		$(exec) --signature="$(SIG)" --schema=input
 
 ssh: $(exec)
-	$(docker) --interactive $(builder) /bin/bash
+	$(docker) --interactive --tty $(tester) /bin/bash
 
 feature: $(exec)
-	$(docker) $(tester) cucumber /features
+	$(docker) $(tester) cucumber ${FILES}
 
 test:
 	$(docker) $(builder) doctest $(shell find src -type f)

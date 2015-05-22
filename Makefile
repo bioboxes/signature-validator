@@ -17,7 +17,7 @@ try: $(exec)
 		$(exec) --signature="$(SIG)" --schema=input
 
 ssh: $(exec)
-	$(docker) --interactive $(builder) /bin/bash
+	$(docker) --interactive --tty $(tester) /bin/bash
 
 feature: $(exec)
 	$(docker) $(tester) cucumber /features

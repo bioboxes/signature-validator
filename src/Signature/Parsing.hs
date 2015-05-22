@@ -1,53 +1,81 @@
 module Signature.Parsing (parseSignature) where
 
 import Text.ParserCombinators.Parsec hiding ((<|>))
+import Text.ParserCombinators.Parsec.Error
 import Control.Applicative
 import Signature.Types
 
 parseObj name obj = try $ do
-  string name
+  spaces
+  try $ string name
   spaces
   x <- upper
   return $ obj x
 
 -- | Parse filetypes from the signature
 --
--- >>> parse parseFile "documentation" "Fasta A" 
+-- >>> parse value "documentation" "Fasta A"
 -- Right (Fasta 'A')
---
--- >>> parse parseFile "documentation" "Fastq A" 
--- Right (Fastq 'A')
-parseFile :: Parser SigObj
-parseFile = parseObj "Fasta" Fasta
-        <|> parseObj "Fastq" Fastq
+value :: Parser SigObj
+value = parseObj "Fasta" Fasta
+    <|> parseObj "Fastq" Fastq
+    <|> parseObj "Insert_size" InsertSize
 
 -- | Parse list from the signature
 --
--- >>> parse parseList "documentation" "[Fasta A]"
+-- >>> parse list "documentation" "[Fasta A]"
 -- Right (SigList (Fasta 'A'))
 --
-parseList :: Parser SigObj
-parseList = do
+list :: Parser SigObj
+list = do
   char '['
-  x <- parseFile
+  x <- value
   char ']'
   return $ SigList x
-  
 
--- | Parse the signature separator "->"
+
+
+-- | Parses the the left/right terms of a signature
 --
--- >>> parse parseSeparator "documentation" "->"
--- Right ()
-parseSeparator :: Parser ()
-parseSeparator = spaces >> (string "->") >> spaces
+-- >>> parse terms "documentation" "Fastq A"
+-- Right [Fastq 'A']
+--
+-- >>> parse terms "documentation" "Fastq A, Fastq A"
+-- Right [Fastq 'A',Fastq 'A']
+--
+-- >>> parse terms "documentation" "[Fastq A], Fastq A"
+-- Right [SigList (Fastq 'A'),Fastq 'A']
+terms :: Parser ([SigObj])
+terms = sepBy values comma
+  where values = value <|> list
+        comma  = string ","
+
 
 
 -- | Parse a biobox signature
 --
--- >>> parse parseSignature "documentation" "Fastq A -> Fasta B"
--- Right [Fastq 'A',Fasta 'B']
+-- >>> parse signature "documentation" "Fastq A -> Fastq A"
+-- Right [[Fastq 'A'],[Fastq 'A']]
 --
--- >>> parse parseSignature "documentation" "[Fastq A] -> Fasta B"
--- Right [SigList (Fastq 'A'),Fasta 'B']
-parseSignature = sepBy f parseSeparator
-  where f = parseFile <|> parseList
+-- >>> parse signature "documentation" "Fastq A, Fastq B -> Fastq A"
+-- Right [[Fastq 'A',Fastq 'B'],[Fastq 'A']]
+--
+-- >>> parse signature "documentation" "[Fastq A] -> Fastq A"
+-- Right [[SigList (Fastq 'A')],[Fastq 'A']]
+signature :: Parser ([[SigObj]])
+signature = sepBy1 terms separator
+  where separator = spaces >> string "->" >> spaces
+
+
+-- | Parse a biobox signature
+--
+-- >>> parseSignature "Fastq A -> Fastq A"
+-- Right ([Fastq 'A'],[Fastq 'A'])
+--
+-- >>> parseSignature "[Fastq A] -> Fastq A"
+-- Right ([SigList (Fastq 'A')],[Fastq 'A'])
+parseSignature :: String -> Either String ([SigObj], [SigObj])
+parseSignature = (either err sig) . (parse signature header)
+  where err x       = Left (show x)
+        sig (x:y:_) = Right (x, y)
+        header = "Error parsing biobox signature"

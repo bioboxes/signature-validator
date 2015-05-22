@@ -1,4 +1,3 @@
-*.hi
-*.o
-*cabal*sandbox*
 dist
+.image-*
+images/*/*.cabal

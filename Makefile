@@ -3,7 +3,6 @@ tester  = tester
 
 docker = docker run \
 	        --tty \
-	        --rm \
 		--env BINARY=/opt/signature-validator/$(exec) \
 		--volume "$(shell pwd)/src:/opt/signature-validator/src:ro" \
 		--volume "$(shell pwd)/dist:/opt/signature-validator/dist:rw" \

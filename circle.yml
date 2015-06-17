@@ -1,0 +1,23 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  cache_directories:
+    - "vendor"
+  override:
+    - ./plumbing/cache_docker builder
+    - ./plumbing/cache_docker tester
+    - ./script/bootstrap
+
+test:
+  override:
+    - ./script/test
+    - ./script/feature
+
+deployment:
+  deploy:
+    branch: master
+    owner: bioboxes
+    commands:
+      - ./script/publish

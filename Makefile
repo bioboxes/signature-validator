@@ -1,9 +1,10 @@
+version = $(shell egrep '^version' bioboxes-signature-parser.cabal | cut -f 2 -d : | tr -d ' ')
+
 builder = builder
 tester  = tester
 
 docker = docker run \
 	        --tty \
-	        --rm \
 		--env BINARY=/opt/signature-validator/$(exec) \
 		--volume "$(shell pwd)/src:/opt/signature-validator/src:ro" \
 		--volume "$(shell pwd)/dist:/opt/signature-validator/dist:rw" \
@@ -12,12 +13,37 @@ docker = docker run \
 exec = dist/build/bioboxes-signature-parser/bioboxes-signature-parser
 
 
+###########################################
+#
+# Publish files
+#
+###########################################
+
+
+publish: $(exec)
+	./plumbing/deploy-files $< $(version)
+
+
+###########################################
+#
+# Interactive commands
+#
+###########################################
+
+
 try: $(exec)
 	$(docker) --interactive $(builder) \
 		$(exec) --signature="$(SIG)" --schema=input
 
 ssh: $(exec)
 	$(docker) --interactive --tty $(tester) /bin/bash
+
+###########################################
+#
+# Build and test the validator
+#
+###########################################
+
 
 feature: $(exec)
 	$(docker) $(tester) cucumber ${FILES}
@@ -29,6 +55,14 @@ build: $(exec)
 
 $(exec): $(shell find src -type f) bioboxes-signature-parser.cabal
 	$(docker) $(builder) cabal build
+
+
+###########################################
+#
+# Bootstrap required resources
+#
+###########################################
+
 
 bootstrap: .image-builder .image-tester
 

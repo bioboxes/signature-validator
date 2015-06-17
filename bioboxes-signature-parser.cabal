@@ -4,13 +4,7 @@
 -- The name of the package.
 name:                bioboxes-signature-parser
 
--- The package version.  See the Haskell package versioning policy (PVP) 
--- for standards guiding when and how versions should be incremented.
--- http://www.haskell.org/haskellwiki/Package_versioning_policy
--- PVP summary:      +-+------- breaking API changes
---                   | | +----- non-breaking API additions
---                   | | | +--- code changes with no API change
-version:             0.1.0.0
+version:             0.1.0
 
 -- A short (one-line) description of the package.
 -- synopsis:            
@@ -56,7 +50,7 @@ test-suite doctests
 
 executable bioboxes-signature-parser
   -- .hs or .lhs file containing the Main module.
-  main-is:             main.hs
+  main-is:             Main.hs
   
   -- Modules included in this executable, other than Main.
   -- other-modules:       

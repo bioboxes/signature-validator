@@ -1,3 +1,4 @@
 dist
 .image-*
 images/*/*.cabal
+vendor

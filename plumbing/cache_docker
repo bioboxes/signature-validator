@@ -4,13 +4,13 @@ set -o errexit
 set -o nounset
 set -o xtrace
 
-IMAGE=builder
+IMAGE=$1
 FILE="vendor/docker/${IMAGE}.tar"
 
 if [[ -e ${FILE} ]]; then
   docker load -i ${FILE}
 else
-  make .image-builder
+  make .image-${IMAGE}
   mkdir -p $(dirname ${FILE})
   docker save ${IMAGE} > ${FILE}
 fi

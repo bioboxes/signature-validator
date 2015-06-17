@@ -6,7 +6,8 @@ dependencies:
   cache_directories:
     - "vendor"
   override:
-    - ./plumbing/cache_docker
+    - ./plumbing/cache_docker builder
+    - ./plumbing/cache_docker tester
     - ./script/bootstrap
 
 test:

@@ -6,7 +6,8 @@ RUN cabal update && \
     'base       >= 4.8  && < 4.9'\
     'parsec     >= 3.1  && < 3.2'\
     'yaml       >= 0.8  && < 0.9'\
-    'bytestring >= 0.10 && < 0.11'
+    'bytestring >= 0.10 && < 0.11'\
+    'doctest    >= 0.8'
 
 ENV BUILD /opt/signature-validator
 RUN mkdir ${BUILD}

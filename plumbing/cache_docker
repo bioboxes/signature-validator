@@ -9,8 +9,8 @@ FILE="vendor/docker/${IMAGE}.tar"
 
 if [[ -e ${FILE} ]]; then
   docker load -i ${FILE}
-else
-  make .image-${IMAGE}
-  mkdir -p $(dirname ${FILE})
-  docker save ${IMAGE} > ${FILE}
 fi
+
+make .image-${IMAGE}
+mkdir -p $(dirname ${FILE})
+docker save ${IMAGE} > ${FILE}

@@ -8,8 +8,6 @@ dependencies:
   override:
     - ./plumbing/cache_docker builder
     - ./plumbing/cache_docker tester
-    - ./plumbing/fix-file-mtime bioboxes-signature-parser.cabal images/builder/bioboxes-signature-parser.cabal
-    - ./plumbing/fix-file-mtime bioboxes-signature-parser.cabal bioboxes-signature-parser.cabal
     - ./script/bootstrap
 
 test:

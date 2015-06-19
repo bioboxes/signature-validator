@@ -12,5 +12,5 @@ docker run \
 	--env AWS_SECRET_KEY=${AWS_SECRET_KEY} \
 	--volume "$(pwd)/$(dirname ${FILE}):/dist:ro" \
 	--entrypoint="/push-to-s3" \
-	upload \
+        nucleotides/file-deployer \
 	bioboxes-tools validate-signature ${VERSION} /dist/bioboxes-signature-parser
